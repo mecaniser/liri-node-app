@@ -2,16 +2,20 @@
 require("dotenv").config();
 //First step it will be to get all keys connected;
 var infoKeys = require('./keys.js');
+//File System for rear and write
 var fs = require('fs');
+//Twitter NPM 
 var twitter = require('twitter');
-var spotify = require('node-spotify-api');
-var spotify = require('spotify');
+//sPotify NMP
+var spotify2 = require('node-spotify-api');
+//OMdb NPM
 var request = require('request');
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// var spotify = new spotify(infoKeys.spotify);
+var sptfy = new spotify2(infoKeys.spotify);
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 var client = new twitter(infoKeys.twitter);
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//Store argument
+//Store arguments
 var argvNode = process.argv;
 var actionLiri = process.argv[2];
 //```````````````````````````````````````````````
@@ -19,36 +23,40 @@ var actionLiri = process.argv[2];
 var q = "";
 for (var i = 3; i < argvNode.length; i++) {
     if (i > 3 && i < argvNode.length) {
-        q += '+' + argvNode[i];
+        q = q + '+' + argvNode[i];
+    } else {
+        q = q + argvNode[i];
     }
 }
 //```````````````````````````````````````````````
+//Switch Cases
 switch (actionLiri) {
-    case "my-tweets":
+    case "tweetIT":
         tweetIT();
         break;
-    case "spotify-this-song":
+    case "spotifyIT":
         if (q) {
             spotifyIT(q)
         } else {
             spotifyIT("Another day in paradise")
         }
         break;
-    case "movie-this":
+    case "movieIT":
         if (q) {
             movieIT(q)
         } else {
             movieIT("Mr. Nobody")
         }
         break;
-    case "this-should-be-done":
-        doIT();
+    case "defaultSong":
+        doITfromIT();
         break;
     default:
-        console.log("[Options available: my-tweets, spotify-this-song, movie-this, this-should-be-done]");
+        console.log("[Options available: tweetIT, spotifyIT, movieIT, defaultSong]");
 }
 //```````````````````````````````````````````````
 function tweetIT() {
+    console.log('~~~My Tweets~~~'+"\n")
     var displayName = {
         screen_name: 'sergio_bordo'
     };
@@ -56,12 +64,18 @@ function tweetIT() {
         if (!err) {
             for (var i = 0; i < tweets.length; i++) {
                 var info = tweets[i].created_at;
-                console.log("@sergio_bordo: " + tweets[i].text + " Created At: " + info.substring(0, 20));
+                console.log("@sergio_bordo: " + tweets[i].text +'\n'+ " Tweeted on: " + info.substring(0, 20));
                 console.log(" *** ");
-
-                //Output the data to a .txt file called log.txt.
-                fs.appendFile('log.txt', "@sergio_bordo: " + tweets[i].text + " Created At: " + info.substring(0, 20));
-                fs.appendFile("log.txt", " *** ")
+                //Log the data to a .txt file called log.txt
+                fs.appendFile("log.txt",
+                "\n" + tweets[i].created_at + 
+                "\n" + tweets[i].text + 
+                "\n" + "***" , function (err) {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
+    
             }
         } else {
             console.log('There is something wrong, and error occurred.');
@@ -70,24 +84,32 @@ function tweetIT() {
 } //bottom
 
 function spotifyIT(song) {
-    spotify.search({
+    console.log('~~~My Songs~~~'+"\n")
+    sptfy.search({
         type: 'track',
         query: song,
-
+        limit: 1
     }, function (err, info) {
         if (!err) {
             for (var i = 0; i < info.tracks.items.length; i++) {
-                var songInfo = data.tracks.items[i];
-                console.log('Artist: ' + songInfo.artists[0].name);
-                console.log('Song: ' + songInfo.name);
-                console.log('Album: ' + songInfo.album.name);
-                console.log('Active URL: ' + songInfo.preview_url);
+
+                var songInfo = info.tracks.items[i];
+
+                console.log(
+                    "\n" + 'Artist name: ' + songInfo.artists[0].name +
+                    "\n" + 'Song name: ' + songInfo.name +
+                    "\n" + 'Album name: ' + songInfo.album.name +
+                    "\n" + 'Active URL: ' + songInfo.preview_url);
                 //Update log.txt with new info
-                fs.appendFile('log.txt', songInfo.artists[0].name);
-                fs.appendFile('log.txt', songInfo.name);
-                fs.appendFile('log.txt', songInfo.preview_url);
-                fs.appendFile('log.txt', songInfo.album.name);
-                fs.appendFile('log.txt', "-----------------------");
+                fs.appendFile("log.txt",
+                    "\n" + 'Artist name: ' + songInfo.artists[0].name +
+                    "\n" + 'Song name: ' + songInfo.name + "\n" + 'Album name: ' + songInfo.album.name +
+                    "\n" + 'Active URL: ' + songInfo.preview_url + 
+                    "\n" + "***" ,function (err) {
+                        if (err) {
+                            console.log(err);
+                        }
+                    })
             }
         } else {
             console.log('There is something wrong, and error occurred. ');
@@ -96,7 +118,8 @@ function spotifyIT(song) {
 } //bottom
 
 function movieIT(movie) {
-    var omdbConnection = 'http://www.omdbapi.com/?t=' + movie + '&plot=short&tomatoes=true';
+    console.log('~~~My Movies~~~'+"\n")
+    var omdbConnection = 'http://www.omdbapi.com/?apikey=b0dbec64&t=' + movie + '&plot=short&tomatoes=true';
     request(omdbConnection, function (err, res, body) {
         if (!err && res.statusCode == 200) {
             var body = JSON.parse(body);
@@ -110,36 +133,39 @@ function movieIT(movie) {
             console.log("Rotten Tomatoes Rating: " + body.tomatoRating);
             console.log("Rotten Tomatoes URL: " + body.tomatoURL);
             //Update log.txt file
-            // fs.appendFile('log.txt', "Title: " + body.Title);
-            // fs.appendFile('log.txt', "Year Released: " + body.Year);
-            // fs.appendFile('log.txt', "Rating IMdB: " + body.imdbRating);
-            // fs.appendFile('log.txt', "Country: " + body.Country);
-            // fs.appendFile('log.txt', "Language: " + body.Language);
-            // fs.appendFile('log.txt', "Plot: " + body.Plot);
-            // fs.appendFile('log.txt', "Actors: " + body.Actors);
-            // fs.appendFile('log.txt', "Rotten Tomatoes Rating: " + body.tomatoRating);
-            // fs.appendFile('log.txt', "Rotten Tomatoes URL: " + body.tomatoURL);
+            fs.appendFile("log.txt",
+                "\n" + "Title: " + body.Title +
+                "\n" + "Year Released: " + body.Year +
+                "\n" + "Rating IMdB: " + body.imdbRating +
+                "\n" + "Country: " + body.Country +
+                "\n" + "Language: " + body.Language +
+                "\n" + "Plot: " + body.Plot +
+                "\n" + "Actors: " + body.Actors +
+                "\n" + "Rotten Tomatoes Rating: " + body.tomatoRating +
+                "\n" + "Rotten Tomatoes URL: " + body.tomatoURL +
+                "\n" + "***", function (err) {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
+
         } else {
-            console.log('There is something wrong, and error occurred. ');
+            console.log('There is something wrong, an error occurred. ');
         }
         if (movie === "Mr. Nobody") {
-            console.log("************************");
+            console.log("***");
             console.log("If you haven't watched 'Mr. Nobody,' then you should: http://www.imdb.com/title/tt0485947/");
             console.log("It's on Netflix!");
-
-            //Update log.txt
-            fs.appendFile('log.txt', "*******************************");
-            fs.appendFile('log.txt', "If you haven't watched 'Mr. Nobody,' then you should: http://www.imdb.com/title/tt0485947/");
-            fs.appendFile('log.txt', "It's on Netflix!");
         }
     });
 } //bottom
 
-function doIT(){
-    fs.readFile('random.txt', "utf8", function(err,info){
-var splitIt = info.split(', ');
+function doITfromIT() {
+    fs.readFile('random.txt', "utf8", function (err, info) {
+        if (err) throw err;
+        var splitIT = info.split(',');
 
-spotifyIT(splitIt[1]);
+        spotifyIT(splitIT[1] + "\n" + "***");
     });
-}//bottom
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+} //bottom
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
