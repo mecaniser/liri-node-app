@@ -18,7 +18,7 @@ ____
 * **Create your Remote and clone to local Repo**
 _Initiate your Node packages with **`npm init -y`**_
 _You should have your `.gitigore` **file** created first_
-* _Use `Screencastify` to **record** and **share***_
+* _Use `Screencastify` to **record** and **share**_
 
 ```
 HomeWork Instructions and Googling a lot !
