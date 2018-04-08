@@ -30,9 +30,9 @@ HomeWork Instructions and Googling a lot !
 **`click`** [**`LIRI`**](https://drive.google.com/file/d/10wERT1wzWzH6ucsngj7dFqolY79atlw4/view) **`link to watch the app.`** 
 
 ## Built With
-
-* [NPM](http://materializecss.com/) | ` is the package manager for javascript` 
-* [_BASH terminal_](https://firebase.google.com/) | `Helps you build better mobile apps and grow your business.`
+* [NODE.js](https://nodejs.org/en/) | `Node.js® is a JavaScript runtime built on Chrome's V8 JavaScript engine`
+* [NPM](https://www.npmjs.com/) | ` is the package manager for javascript` 
+* [_BASH GIT terminal_](https://git-scm.com/downloads) | `Git is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency..`
 * [**jQuery**](https://jquery.com/) | `is a fast, small, and feature-rich JavaScript library.`
 
 ![Illustration](images/illustration.PNG) 
