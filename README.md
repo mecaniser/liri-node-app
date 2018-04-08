@@ -34,8 +34,9 @@ HomeWork Instructions and Googling a lot !
 * [NPM](http://materializecss.com/) | ` is the package manager for javascript` 
 * [_BASH terminal_](https://firebase.google.com/) | `Helps you build better mobile apps and grow your business.`
 * [**jQuery**](https://jquery.com/) | `is a fast, small, and feature-rich JavaScript library.`
-*  [****](https://momentjs.com/) | `Parse, validate, manipulate, and display dates and times in JavaScript.`
+```
 ![Illustration](images/illustration.PNG) 
+```
 ## Authors
 
 > **Sergio Burca** -  - [*GitHub*](https://github.com/mecaniser)
